@@ -187,10 +187,9 @@ app.post('/update-status', (req, res) => {
 // log-activity endpoint
 app.post('/log-activity', (req, res) => {
   const { username } = req.body;
-  const today = new Date().toISOString().split('T')[0];
 
-  const query = 'INSERT OR REPLACE INTO activities (username, date, count) VALUES (?, ?, COALESCE((SELECT count FROM activities WHERE username = ? AND date = ?), 0) + 1)';
-  db.run(query, [username, today, username, today], function (err) {
+  const query = "INSERT INTO activities (username, date, count) VALUES (?, date('now'), 1) ON CONFLICT(username, date) DO UPDATE SET count = count + 1;";
+  db.run(query, [username], function (err) {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: 'Error logging activity' });
