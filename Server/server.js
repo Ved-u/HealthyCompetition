@@ -6,6 +6,12 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
+// enums for status
+const lazy_ass = "Lazy-Ass";
+const aiml = "AIML";
+const course = "DSA / WebD";
+const grind = "LeetCode / GFG";
+
 // Define a global variable for the server URL
 const SERVER_URL = process.env.SERVER_URL || 'http://localhost:5000';
 
@@ -29,7 +35,8 @@ const createTableQuery = `CREATE TABLE IF NOT EXISTS users (
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   leetcode TEXT,
-  gfg TEXT
+  gfg TEXT,
+  status TEXT
 )`;
 
 db.run(createTableQuery, (err) => {
@@ -52,8 +59,8 @@ app.post('/signup', (req, res) => {
       return res.status(400).json({ message: 'User already exists. Please login.' });
     }
 
-    const insertUserQuery = 'INSERT INTO users (email, username, password, leetcode, gfg) VALUES (?, ?, ?, ?, ?)';
-    db.run(insertUserQuery, [email, username, password, leetcode, gfg], function (err) {
+    const insertUserQuery = 'INSERT INTO users (email, username, password, leetcode, gfg, status) VALUES (?, ?, ?, ?, ?, ?)';
+    db.run(insertUserQuery, [email, username, password, leetcode, gfg, lazy_ass], function (err) {
       if (err) {
         console.error('Error inserting user:', err);
         return res.status(500).json({ message: 'Error signing up user' });
@@ -90,7 +97,7 @@ app.post('/login', (req, res) => {
 app.get('/user/:username', (req, res) => {
   const { username } = req.params;
 
-  db.get('SELECT email, username, leetcode FROM users WHERE username = ?', [username], (err, row) => {
+  db.get('SELECT email, username, leetcode, status FROM users WHERE username = ?', [username], (err, row) => {
     if (err) {
       return res.status(500).json({ message: 'Error fetching user' });
     }
@@ -105,7 +112,6 @@ app.get('/user/:username', (req, res) => {
 // get-leetcode endpoint
 app.get('/leetcode/:username', async (req, res) => {
   const { username } = req.params;
-
   try {
     const response = await fetch('https://leetfetch.vercel.app/api/leetcode', {
       method: 'POST',
@@ -131,11 +137,8 @@ app.get('/leetcode/:username', async (req, res) => {
         variables: { username }
       })
     });
-
     const data = await response.json();
-
     const stats = data.data.matchedUser;
-
     const result = {
       ranking: stats.profile.ranking,
       easy: stats.submitStats.acSubmissionNum[1].count,
@@ -146,13 +149,24 @@ app.get('/leetcode/:username', async (req, res) => {
         stats.submitStats.acSubmissionNum[2].count +
         stats.submitStats.acSubmissionNum[3].count
     };
-
     res.json(result);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch LeetCode data" });
   }
+});
+
+// set-status endpoint
+app.post('/update-status', (req, res) => {
+  const { username, status } = req.body;
+  const query = 'UPDATE users SET status = ? WHERE username = ?';
+  db.run(query, [status, username], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error updating status' });
+    }
+    res.json({ message: 'Status updated successfully' });
+  });
 });
 
 app.listen(PORT, () => {
