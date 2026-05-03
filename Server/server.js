@@ -45,6 +45,21 @@ db.run(createTableQuery, (err) => {
   }
 });
 
+// Create activities table if it doesn't exist
+const createActivitiesTableQuery = `CREATE TABLE IF NOT EXISTS activities (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL,
+  date TEXT NOT NULL,
+  count INTEGER DEFAULT 1,
+  UNIQUE(username, date)
+)`;
+
+db.run(createActivitiesTableQuery, (err) => {
+  if (err) {
+    console.error('Error creating activities table:', err);
+  }
+});
+
 // Signup endpoint
 app.post('/signup', (req, res) => {
   const { email, username, password, leetcode, gfg } = req.body;
@@ -166,6 +181,38 @@ app.post('/update-status', (req, res) => {
       return res.status(500).json({ message: 'Error updating status' });
     }
     res.json({ message: 'Status updated successfully' });
+  });
+});
+
+// log-activity endpoint
+app.post('/log-activity', (req, res) => {
+  const { username } = req.body;
+  const today = new Date().toISOString().split('T')[0];
+
+  const query = 'INSERT OR REPLACE INTO activities (username, date, count) VALUES (?, ?, COALESCE((SELECT count FROM activities WHERE username = ? AND date = ?), 0) + 1)';
+  db.run(query, [username, today, username, today], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error logging activity' });
+    }
+    res.json({ message: 'Activity logged' });
+  });
+});
+
+// get-activities endpoint
+app.get('/activities/:username', (req, res) => {
+  const { username } = req.params;
+  const today = new Date();
+  const yearStart = new Date(today.getFullYear(), 0, 1);
+  const dateStr = yearStart.toISOString().split('T')[0];
+
+  const query = 'SELECT date, count FROM activities WHERE username = ? AND date >= ? ORDER BY date';
+  db.all(query, [username, dateStr], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error fetching activities' });
+    }
+    res.json(rows);
   });
 });
 
