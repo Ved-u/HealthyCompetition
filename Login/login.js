@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById('signup-form');
   const messageDiv = document.getElementById('message');
 
+  // Define a global variable for the server URL
+  const SERVER_URL = 'http://localhost:5000';
+
   // Toggle forms
   loginBtn.addEventListener('click', () => {
     loginBtn.classList.add('active');
@@ -43,6 +46,30 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Login Details:', { identifier });
     messageDiv.textContent = 'Login details logged to database';
     messageDiv.style.color = 'green';
+
+    try {
+      const response = await fetch(`${SERVER_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ identifier, password })
+      });
+
+      const result = await response.json();
+      messageDiv.textContent = result.message;
+      messageDiv.style.color = response.ok ? 'green' : 'red';
+      if (response.ok) {
+        // SAVE USER
+        localStorage.setItem("username", identifier);
+        // REDIRECT
+        window.location.href = "../User_Page/profile.html";
+      } 
+    } catch (error) {
+      console.error('Error sending login details:', error);
+      messageDiv.textContent = 'Failed to connect to server.';
+      messageDiv.style.color = 'red';
+    }
   });
 
   // Signup form submission
@@ -69,5 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Signup Details:', { email, username, leetcode, gfg });
     messageDiv.textContent = 'Signup details logged to database';
     messageDiv.style.color = 'green';
+
+    try {
+      const response = await fetch(`${SERVER_URL}/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, username, password, leetcode, gfg })
+      });
+
+      const result = await response.json();
+      messageDiv.textContent = result.message;
+      messageDiv.style.color = response.ok ? 'green' : 'red';
+    } catch (error) {
+      console.error('Error sending signup details:', error);
+      messageDiv.textContent = 'Failed to connect to server.';
+      messageDiv.style.color = 'red';
+    }
   });
 });
