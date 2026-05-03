@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       messageDiv.style.color = response.ok ? 'green' : 'red';
       if (response.ok) {
         // SAVE USER
-        localStorage.setItem("username", identifier);
+        localStorage.setItem("username", result.username);
         // REDIRECT
         window.location.href = "../User_Page/profile.html";
       } 

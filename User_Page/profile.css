@@ -32,6 +32,7 @@
 #status-select {
   width: 50%;               /* Makes dropdown take full width of container */
   min-width: 150px;         /* Prevents it from becoming too small */
+  max-width: 200px;
 
   padding: 10px 14px;       /* Inner spacing for better look */
   border-radius: 12px;      /* Rounded corners (modern UI feel) */
@@ -156,4 +157,83 @@
 
 .day:hover {
   transform: scale(1.2);
+}
+
+.layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.container {
+  max-width: 1200px; 
+  margin: auto;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+
+  padding: 20px;
+  overflow-y: auto;
+
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+
+  transition: 0.3s ease;
+}
+
+.sidebar:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.main-content {
+  flex: 1;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list li {
+  margin-bottom: 8px;
+}
+
+.user-list a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.user-list a:hover {
+  background: rgba(139,92,246,0.12);
+  color: var(--text);
+}
+
+.user-list a.active {
+  background: rgba(139,92,246,0.2);
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: relative;
+  }
 }

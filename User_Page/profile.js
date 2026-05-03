@@ -1,10 +1,12 @@
 const SERVER_URL = "http://localhost:5000";
 
 // get stored username in localStorage after login
-const username = localStorage.getItem("username");
+const currentUser = localStorage.getItem("username");
+let viewingUser = currentUser; // Track which user's profile we're viewing
 
-async function loadUser() {
-  const res = await fetch(`${SERVER_URL}/user/${username}`);
+async function loadUser(userToLoad = currentUser) {
+  viewingUser = userToLoad;
+  const res = await fetch(`${SERVER_URL}/user/${userToLoad}`);
   const data = await res.json();
 
   document.getElementById("username").innerText = data.username;
@@ -13,15 +15,29 @@ async function loadUser() {
   document.getElementById("leetcode-link").href = data.leetcode;
   document.getElementById("status-select").value = data.status;
 
+  const statusSelect = document.getElementById("status-select");
+
+  if (userToLoad === currentUser) {
+    statusSelect.disabled = false; 
+  } else {
+    statusSelect.disabled = true;
+  }
+
   // Extract LeetCode username from URL
   const lcUsername = data.leetcode.split("/").filter(Boolean).pop();
 
   loadLeetCodeStats(lcUsername);
+  logActivity().then(()=>{
+    loadActivityHeatmap(userToLoad);
+  });
 }
 
 const statusSelect = document.getElementById("status-select");
 
 statusSelect.addEventListener("change", async () => {
+  // Only allow status updates for current user
+  if (viewingUser !== currentUser) return;
+
   const value = statusSelect.value;
   // Send to server
   try {
@@ -31,7 +47,7 @@ statusSelect.addEventListener("change", async () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        username: username,
+        username: currentUser,
         status: value
       })
     });
@@ -56,9 +72,9 @@ async function loadLeetCodeStats(username) {
   }
 }
 
-async function loadActivityHeatmap() {
+async function loadActivityHeatmap(userToLoad = currentUser) {
   try {
-    const res = await fetch(`${SERVER_URL}/activities/${username}`);
+    const res = await fetch(`${SERVER_URL}/activities/${userToLoad}`);
     const activities = await res.json();
 
     const activityMap = {};
@@ -149,15 +165,44 @@ async function logActivity() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ username })
+      body: JSON.stringify({ username: currentUser })
     });
   } catch (err) {
     console.log("Failed to log activity", err);
   }
 }
 
-loadUser().then(() => {
-  logActivity().then(()=>{
-    loadActivityHeatmap();
-  });
+async function loadUserList() {
+  try {
+    const res = await fetch(`${SERVER_URL}/users`);
+    const users = await res.json();
+
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = "";
+
+    users.forEach(user => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = user.username;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadUser(user.username);
+        // Update active class
+        document.querySelectorAll(".user-list a").forEach(link => link.classList.remove("active"));
+        a.classList.add("active");
+      });
+      if (user.username === viewingUser) {
+        a.classList.add("active");
+      }
+      li.appendChild(a);
+      userList.appendChild(li);
+    });
+  } catch (err) {
+    console.log("Failed to load user list", err);
+  }
+}
+
+loadUserList().then(() => {
+  loadUser();
 });

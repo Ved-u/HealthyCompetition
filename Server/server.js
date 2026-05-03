@@ -7,7 +7,7 @@ const app = express();
 const PORT = 5000;
 
 // enums for status
-const lazy_ass = "Lazy-Ass";
+const lazy_rabbit = "Lazy-Rabbit";
 const aiml = "AIML";
 const course = "DSA / WebD";
 const grind = "LeetCode / GFG";
@@ -75,7 +75,7 @@ app.post('/signup', (req, res) => {
     }
 
     const insertUserQuery = 'INSERT INTO users (email, username, password, leetcode, gfg, status) VALUES (?, ?, ?, ?, ?, ?)';
-    db.run(insertUserQuery, [email, username, password, leetcode, gfg, lazy_ass], function (err) {
+    db.run(insertUserQuery, [email, username, password, leetcode, gfg, lazy_rabbit], function (err) {
       if (err) {
         console.error('Error inserting user:', err);
         return res.status(500).json({ message: 'Error signing up user' });
@@ -98,7 +98,7 @@ app.post('/login', (req, res) => {
 
     if (row) {
       if (row.password === password) {
-        return res.status(200).json({ message: 'Login successful.' });
+        return res.status(200).json({ message: 'Login successful.', username: row.username });
       } else {
         return res.status(400).json({ message: 'Username/Password wrong' });
       }
@@ -210,6 +210,18 @@ app.get('/activities/:username', (req, res) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: 'Error fetching activities' });
+    }
+    res.json(rows);
+  });
+});
+
+// get-all-users endpoint
+app.get('/users', (req, res) => {
+  const query = 'SELECT username FROM users';
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error fetching users' });
     }
     res.json(rows);
   });
