@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthyCompetition Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-bg"></div>
+  <div class="page-overlay"></div>
+  <main class="container">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Welcome back</p>
+        <h1>HealthyCompetition</h1>
+        <p class="subtitle">Sign in or create an account to track your coding journey and share your profiles.</p>
+      </div>
+    </header>
+
+    <section class="form-card">
+      <div class="form-toggle">
+        <button id="login-btn" class="active">Login</button>
+        <button id="signup-btn">Sign Up</button>
+      </div>
+
+      <form id="login-form" class="form active">
+        <label>
+          <span>Username or Email</span>
+          <input type="text" id="login-identifier" placeholder="Enter your username or email" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" id="login-password" placeholder="Enter your password" required>
+        </label>
+        <button type="submit" class="primary-btn">Login</button>
+      </form>
+
+      <form id="signup-form" class="form">
+        <label>
+          <span>Email</span>
+          <input type="email" id="signup-email" placeholder="you@example.com" required>
+        </label>
+        <label>
+          <span>Username</span>
+          <input type="text" id="signup-username" placeholder="Choose a username" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" id="signup-password" placeholder="Create a strong password" required>
+        </label>
+        <label>
+          <span>Confirm Password</span>
+          <input type="password" id="signup-confirm-password" placeholder="Re-enter your password" required>
+        </label>
+        <label>
+          <span>LeetCode Profile</span>
+          <input type="url" id="signup-leetcode" placeholder="https://leetcode.com/yourname">
+        </label>
+        <label>
+          <span>GFG Profile</span>
+          <input type="url" id="signup-gfg" placeholder="https://gfg.com/yourname">
+        </label>
+        <button type="submit" class="primary-btn">Sign Up</button>
+      </form>
+
+      <p id="message" class="message"></p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
