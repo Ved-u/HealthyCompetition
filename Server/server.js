@@ -25,8 +25,8 @@ const db = new sqlite3.Database('./healthy_competition.db', (err) => {
 // Create users table if it doesn't exist
 const createTableQuery = `CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL,
-  username TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   leetcode TEXT,
   gfg TEXT
@@ -42,13 +42,24 @@ db.run(createTableQuery, (err) => {
 app.post('/signup', (req, res) => {
   const { email, username, password, leetcode, gfg } = req.body;
 
-  const query = 'INSERT INTO users (email, username, password, leetcode, gfg) VALUES (?, ?, ?, ?, ?)';
-  db.run(query, [email, username, password, leetcode, gfg], function (err) {
+  const checkUserQuery = 'SELECT * FROM users WHERE email = ?';
+  db.get(checkUserQuery, [email], (err, row) => {
     if (err) {
-      console.error('Error inserting user:', err);
-      return res.status(500).json({ message: 'Error signing up user' });
+      console.error('Error checking user:', err);
+      return res.status(500).json({ message: 'Error checking user' });
     }
-    res.status(200).json({ message: 'Signup successful' });
+    if (row) {
+      return res.status(400).json({ message: 'User already exists. Please login.' });
+    }
+
+    const insertUserQuery = 'INSERT INTO users (email, username, password, leetcode, gfg) VALUES (?, ?, ?, ?, ?)';
+    db.run(insertUserQuery, [email, username, password, leetcode, gfg], function (err) {
+      if (err) {
+        console.error('Error inserting user:', err);
+        return res.status(500).json({ message: 'Error signing up user' });
+      }
+      res.status(200).json({ message: 'Signup successful. Please login.' });
+    });
   });
 });
 
@@ -56,17 +67,21 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
   const { identifier, password } = req.body; // identifier can be email or username
 
-  const query = 'SELECT * FROM users WHERE (email = ? OR username = ?) AND password = ?';
-  db.get(query, [identifier, identifier, password], (err, row) => {
+  const query = 'SELECT * FROM users WHERE (email = ? OR username = ?)';
+  db.get(query, [identifier, identifier], (err, row) => {
     if (err) {
       console.error('Error querying user:', err);
       return res.status(500).json({ message: 'Error logging in user' });
     }
 
     if (row) {
-      res.status(200).json({ message: 'Login successful' });
+      if (row.password === password) {
+        return res.status(200).json({ message: 'Login successful.' });
+      } else {
+        return res.status(400).json({ message: 'Username/Password wrong' });
+      }
     } else {
-      res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Username/Password wrong' });
     }
   });
 });
