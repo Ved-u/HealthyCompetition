@@ -157,6 +157,7 @@ async function logActivity() {
 }
 
 loadUser().then(() => {
-  loadActivityHeatmap();
-  logActivity();
+  logActivity().then(()=>{
+    loadActivityHeatmap();
+  });
 });
