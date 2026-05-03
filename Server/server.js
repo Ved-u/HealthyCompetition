@@ -86,6 +86,75 @@ app.post('/login', (req, res) => {
   });
 });
 
+// get-user endpoint
+app.get('/user/:username', (req, res) => {
+  const { username } = req.params;
+
+  db.get('SELECT email, username, leetcode FROM users WHERE username = ?', [username], (err, row) => {
+    if (err) {
+      return res.status(500).json({ message: 'Error fetching user' });
+    }
+    if (!row) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(row);
+  });
+});
+
+// get-leetcode endpoint
+app.get('/leetcode/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const response = await fetch('https://leetfetch.vercel.app/api/leetcode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+        query userProblemsSolved($username: String!) {
+          matchedUser(username: $username) {
+            submitStats {
+              acSubmissionNum {
+                difficulty
+                count
+              }
+            }
+            profile {
+              ranking
+            }
+          }
+        }
+        `,
+        variables: { username }
+      })
+    });
+
+    const data = await response.json();
+
+    const stats = data.data.matchedUser;
+
+    const result = {
+      ranking: stats.profile.ranking,
+      easy: stats.submitStats.acSubmissionNum[1].count,
+      medium: stats.submitStats.acSubmissionNum[2].count,
+      hard: stats.submitStats.acSubmissionNum[3].count,
+      total:
+        stats.submitStats.acSubmissionNum[1].count +
+        stats.submitStats.acSubmissionNum[2].count +
+        stats.submitStats.acSubmissionNum[3].count
+    };
+
+    res.json(result);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch LeetCode data" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on ${SERVER_URL}`);
 });

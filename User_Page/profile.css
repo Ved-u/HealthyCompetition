@@ -1,0 +1,37 @@
+@import url('../Login/login.css'); /* reuse your base */
+
+.profile-card, .stats-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.profile-card p {
+  margin: 10px 0;
+  color: var(--muted);
+}
+
+.profile-card a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stat {
+  background: rgba(139,92,246,0.12);
+  padding: 15px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.stat h3 {
+  margin: 5px 0 0;
+}

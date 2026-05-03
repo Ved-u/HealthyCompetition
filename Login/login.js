@@ -59,6 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json();
       messageDiv.textContent = result.message;
       messageDiv.style.color = response.ok ? 'green' : 'red';
+      if (response.ok) {
+        // SAVE USER
+        localStorage.setItem("username", identifier);
+        // REDIRECT
+        window.location.href = "../User_Page/profile.html";
+      } 
     } catch (error) {
       console.error('Error sending login details:', error);
       messageDiv.textContent = 'Failed to connect to server.';
