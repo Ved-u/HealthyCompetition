@@ -1,0 +1,92 @@
+@import url('../Login/login.css'); /* reuse your base */
+
+.profile-card, .stats-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.profile-card p {
+  margin: 10px 0;
+  color: var(--muted);
+}
+
+.profile-card a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.status-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+/* dropdown styling */
+#status-select {
+  width: 50%;               /* Makes dropdown take full width of container */
+  min-width: 150px;         /* Prevents it from becoming too small */
+
+  padding: 10px 14px;       /* Inner spacing for better look */
+  border-radius: 12px;      /* Rounded corners (modern UI feel) */
+
+  background: rgba(255, 255, 255, 0.05); /* Glass-like dark background */
+  color: var(--text);       /* Text color from your theme */
+
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Soft subtle border */
+  outline: none;            /* Removes default browser outline */
+
+  backdrop-filter: blur(10px); /* Glassmorphism blur effect */
+
+  font-weight: 500;         /* Slightly bold text */
+  cursor: pointer;          /* Pointer cursor on hover */
+
+  transition: all 0.2s ease; /* Smooth hover/focus animations */
+
+  /* Remove default browser dropdown arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Custom arrow icon using SVG */
+  background-image: url("data:image/svg+xml,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;          /* Prevents repeating */
+  background-position: right 12px center; /* Positions arrow on right side */
+}
+
+/* Hover effect (when mouse is over dropdown) */
+#status-select:hover {
+  border-color: rgba(139, 92, 246, 0.6);        /* Purple border highlight */
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08); /* Soft glow */
+}
+
+/* Focus effect (when clicked/active) */
+#status-select:focus {
+  border-color: rgba(139, 92, 246, 0.9);        /* Stronger purple */
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15); /* Bigger glow */
+}
+
+/* Dropdown option styling (limited browser support) */
+#status-select option {
+  background: #0d0818;   /* Dark background for dropdown list */
+  color: #f7f5ff;        /* Light text */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stat {
+  background: rgba(139,92,246,0.12);
+  padding: 15px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.stat h3 {
+  margin: 5px 0 0;
+}

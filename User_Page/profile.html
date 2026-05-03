@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - HealthyCompetition</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="icon" type="image/png" href="../Login/Tri_Developers.png">
+</head>
+<body>
+
+<div class="page-bg"></div>
+<div class="page-overlay"></div>
+
+<main class="container">
+  <header class="hero">
+    <p class="eyebrow">Dashboard</p>
+    <h1 id="username">Loading...</h1>
+    <p class="subtitle">Your coding journey stats</p>
+  </header>
+
+  <section class="profile-card">
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Username:</strong> <span id="user"></span></p>
+    <p><strong>LeetCode:</strong> <a id="leetcode-link" target="_blank">View Profile</a></p>
+    <div class="status-container">
+      <div class="status-box">
+        <strong>Status:</strong>
+        <select id="status-select">
+          <option value="Lazy-Ass">Lazy-Ass</option>
+          <option value="AIML">AIML</option>
+          <option value="DSA / WebD">DSA / WebD</option>
+          <option value="LeetCode / GFG">LeetCode / GFG</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <h2>LeetCode Stats</h2>
+    <div class="stats-grid">
+      <div class="stat">
+        <p>Rank</p>
+        <h3 id="rank">-</h3>
+      </div>
+      <div class="stat">
+        <p>Questions Solved</p>
+        <h3 id="solved">-</h3>
+      </div>
+      <div class="stat">
+        <p>Easy</p>
+        <h3 id="easy">-</h3>
+      </div>
+      <div class="stat">
+        <p>Medium</p>
+        <h3 id="medium">-</h3>
+      </div>
+      <div class="stat">
+        <p>Hard</p>
+        <h3 id="hard">-</h3>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="profile.js"></script>
+</body>
+</html>

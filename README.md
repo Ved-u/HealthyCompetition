@@ -8,3 +8,9 @@ Open `index.html` in your browser. Fill out the signup or login forms, and the d
 - Signup form with email, username, password, LeetCode and GFG links
 - Login form with username/email and password
 - Details stored in database
+
+# setup the api endpoints in SERVER_URL variable in sript.js & server.js file
+
+# start server by running this command
+npm install
+node server.js
