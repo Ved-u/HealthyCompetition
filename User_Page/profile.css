@@ -1,4 +1,9 @@
 @import url('../Login/login.css'); /* reuse your base */
+/* change the width if required currently optimized
+ for mobile-bowser view */
+.container {
+  max-width: 500px;
+}
 
 .profile-card, .stats-card {
   background: rgba(255,255,255,0.05);
@@ -89,4 +94,66 @@
 
 .stat h3 {
   margin: 5px 0 0;
+}
+
+.activity-heatmap {
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.activity-heatmap h2 {
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.heatmap-months {
+  position: relative;
+  min-height: 20px;
+  margin-bottom: 8px;
+}
+
+.month-label {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.month-gap {
+  margin-left: 10px;
+}
+
+#heatmap {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-flow: column;
+  gap: 6px;
+  min-height: calc(7 * 12px + 6 * 6px);
+}
+
+.day {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.1);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.day.active-1 { background: rgba(34, 197, 94, 0.3); }
+.day.active-2 { background: rgba(34, 197, 94, 0.5); }
+.day.active-3 { background: rgba(34, 197, 94, 0.7); }
+.day.active-4 { background: rgba(34, 197, 94, 1); }
+
+.day:hover {
+  transform: scale(1.2);
 }
